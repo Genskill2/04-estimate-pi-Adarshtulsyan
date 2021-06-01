@@ -3,33 +3,58 @@
 #include <stdio.h>
 #include <math.h>
 
-float wallis_pi(int);
-
-int main(void) {
-  float pi;
-  for (int i=0; i<5; i++) {
-    pi = wallis_pi(i);
-    if (!(fabs(pi - M_PI) > 0.15)) {
-      printf("Estimate with just %d iterations is %f which is too accurate.\n", i, pi);
-      abort();
+float mc_pi(int);
+float frandom();
+float mc_pi(int q)
+{
+    int circle=0;
+    float w;
+    for(int i=1;i<=q;i++)
+    {
+    float x,y,dist;
+    x=(frandom()*2)-1;
+    y=(frandom()*2)-1;
+    dist=sqrt(pow(x,2)+pow(y,2));
+    if(dist<=1)
+    {
+        circle++;
     }
-  }
-
-  for (int i=500; i<3000; i++) {
-    pi = wallis_pi(i);
-    if (!(fabs(pi - M_PI) < 0.01)) {
-      printf("Estimate with even %d iterations is %f which is not accurate enough.\n", i, pi);
-      abort();
     }
-  }
+    w=4*(circle/(float)q);
+    return w;
+
 }
 
-float wallis_pi(int i)
-{
-    float x=1.0;
-    for(int n=1;n<(i+1);n++)
-    {
-        x=x*((4*pow(n,2))/((4*pow(n,2)-1)));
+float frandom() {
+  long int q = random();
+  float ret = (float)q/(float)RAND_MAX;
+  return ret;
+}
+
+int main(void) {
+  float pi0;
+  float pi1;
+
+  pi0 = mc_pi(25000);
+  pi1 = mc_pi(25000);
+  printf("%f %f\n", pi0, pi1);
+
+  if (pi0 == pi1) {
+      printf("Two separate estimates of pi are exactly the same. This is unlikely.\n");
+      abort();
     }
-    return (2*x);
+
+  if (fabs(pi0 - pi1) > 0.05) {
+      printf("Two separate estimates %f and %f are too different.\n", pi0, pi1);
+      abort();
+  }
+
+
+  for (int i=2000; i<5000; i++) {
+    pi0 = mc_pi(i);
+    if (!(fabs(pi0 - M_PI) < 0.4)) {
+      printf("Estimate with even %d iterations is %f which is not accurate enough.\n", i, pi0);
+      abort();
+    }
+  }
 }
