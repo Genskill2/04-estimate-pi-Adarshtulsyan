@@ -39,5 +39,24 @@ int main(void) {
   }
 }
 
+float mc_pi(int q)
+{
+    int circle=0;
+    float w;
+    for(int i=1;i<=q;i++)
+    {
+    float x,y,dist;
+    x=(frandom()*2)-1;
+    y=(frandom()*2)-1;
+    dist=sqrt(pow(x,2)+pow(y,2));
+    if(dist<=1)
+    {
+        circle++;
+    }
+    }
+    w=4*(circle/(float)q);
+    return w;
+
+}
 
 
