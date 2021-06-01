@@ -4,6 +4,7 @@
 #include <math.h>
 
 float mc_pi(int);
+float frandom();
 float mc_pi(int q)
 {
     int circle=0;
